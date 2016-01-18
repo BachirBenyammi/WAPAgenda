@@ -1,0 +1,67 @@
+extern function lengthConv(leni, leno, leninp) 
+{
+	var Units = "~0Centimeters~1Inches~2Feet~3Yards~4Meters~5Chains~6Kilometers~7Miles~8";
+	var leni1 = String.find(Units, "~" + leni);
+	var leni2 = String.find(Units, "~" + (leni + 1));
+	var leninm = String.subString(Units,(leni1 + 2),leni2-(leni1 + 2));
+	var leno1 = String.find(Units, "~" + leno);
+	var leno2 = String.find(Units, "~" + (leno + 1));
+	var lenonm = String.subString(Units,(leno1 + 2),leno2-(leno1 + 2));
+	
+	var isn01;
+	if (leni==0)
+		isn01 = "~01~10.3937~20.03281~30.01094~40.01~50.0004971~60.00001~70.000006214~8";
+	else if (leni==1)
+		isn01 = "~02.540~11~20.08333~30.02778~40.0254~50.001263~60.0000254~70.00001578~8";
+	else if (leni==2)
+		isn01 = "~030.48~112~21~30.3333~40.3048~50.01515~60.0003048~70.0001894~8";
+	else if (leni==3)
+		isn01 = "~091.44~136~23~31~40.9144~50.04545~60.0009144~70.0005682~8";
+	else if (leni==4)
+		isn01 = "~0100~139.37~23.281~31.0936~41~50.04971~60.001~70.0006214~8";
+	else if (leni==5)
+		isn01 = "~02012~1792~266~322~420.12~51~60.0212~70.0125~8";
+	else if (leni==6)
+		isn01 = "~0100000~139370~23281~31093.6~41000~549.71~61~70.6214~8";
+	else if (leni==7)
+		isn01 = "~0160934~163360~25280~31760~41609~580~61.609~71~8";
+
+  	var useri = leninp;
+  	if (useri == 0) 
+  	{
+    	useri = 1;
+    	leninp = useri;
+  	}
+  	var mulstr = isn01;
+	var picker = "~" + leno;
+	var ps = String.find(mulstr, picker);
+	leno++;
+	picker = "~" + leno;
+	var ps1 = String.find(mulstr,picker);
+	mulstr = Lang.parseFloat(String.subString(mulstr,(ps + 2),ps1-(ps + 2)));
+	ps = (useri * mulstr);
+	ps = String.format("%1.9f", ps);
+  	picker = "";
+  	picker += ps;
+  	ps1 = String.find(picker, ".");
+  	if (ps1 > -1) 
+  	{
+    	ps = Lang.parseFloat(ps) + .000001;
+    	picker = "";
+    	picker += String.format("%1.9f", ps);
+    	var ps2 = String.find(picker, "e");
+    	if (ps2 < 0)
+      		picker = String.subString(picker,0,(ps1 + 6));
+	    if (ps2 == 0 || ps2 > 0) 
+		{
+		    var ps3 = String.find(picker, "00000");
+    	    if (ps3 > 0) 
+        		picker = String.subString(picker,0,ps3 + 1) + 
+				String.subString(picker, ps2,String.length(picker)-ps2);
+	     }
+    }
+ 	picker = useri + " " + leninm + " = " + picker + " " + lenonm;
+
+	WMLBrowser.setVar('lenout', picker);
+	WMLBrowser.go('lenght.php#Result');
+}

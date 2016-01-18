@@ -1,0 +1,69 @@
+extern function energyConv(leni, leno, leninp) 
+{
+	var Units = "~0Joules~1Kg-meters~2Ft-lbs~3Kw-hrs~4Metric Hp-hrs~5US Hp-hrs~6Liter-atm~7K-cal~8Btu~9";
+	var leni1 = String.find(Units, "~" + leni);
+	var leni2 = String.find(Units, "~" + (leni + 1));
+	var leninm = String.subString(Units,(leni1 + 2),leni2-(leni1 + 2));
+	var leno1 = String.find(Units, "~" + leno);
+	var leno2 = String.find(Units, "~" + (leno + 1));
+	var lenonm = String.subString(Units,(leno1 + 2),leno2-(leno1 + 2));
+
+	var isn10;
+	if (leni==0)
+		isn10 = "~01~10.10197~20.7376~32.778e-7~43.777e-7~53.725e-7~60.009869~70.0002388~80.0009478~9";
+	else if (leni==1)
+		isn10 = "~09.80665~11~27.233~32.724e-6~43.7037e-6~53.653e-6~60.09678~70.002342~80.009295~9";
+	else if (leni==2)
+		isn10 = "~01.356~10.1383~21~33.766e-7~45.1206e-7~55.0505e-7~60.01338~70.0003238~80.001285~9";
+	else if (leni==3)
+		isn10 = "~03.6e6~13.671e5~22.655e6~31~41.3596~51.341~635528~7859.9~83412~9";
+	else if (leni==4)
+		isn10 = "~02.648e6~12.7e5~21.9529e6~30.7355~41~50.9863~626131~7632.4~82510~9";
+	else if (leni==5)
+		isn10 = "~02.6845e6~12.7375e5~21.98e6~30.7457~41.0139~51~626493~7641.2~82544~9";
+	else if (leni==6)
+		isn10 = "~0101.333~110.333~274.74~32.815e-5~43.827e-5~53.775e-5~61~70.0242~80.09604~9";
+	else if (leni==7)
+		isn10 = "~04187~1426.9~23088~30.001163~40.001581~50.001560~641.32~71~83.968~9";
+	else if (leni==8)
+		isn10 = "~01055~1107.6~2778.2~32.931e-4~43.985e-4~53.93e-4~610.41~70.252~81~9";
+
+  	var useri = leninp;
+  	if (useri == 0) 
+  	{
+    	useri = 1;
+    	leninp = useri;
+  	}
+  	var mulstr = isn10;
+	var picker = "~" + leno;
+	var ps = String.find(mulstr, picker);
+	leno++;
+	picker = "~" + leno;
+	var ps1 = String.find(mulstr, picker);
+	mulstr = Lang.parseFloat(String.subString(mulstr,(ps + 2),ps1-(ps + 2)));
+	ps = (useri * mulstr);
+	ps = String.format("%1.9f", ps);
+  	picker = "";
+  	picker += ps;
+  	ps1 = String.find(picker, ".");
+  	if (ps1 > -1) 
+  	{
+    	ps = Lang.parseFloat(ps) + .000001;
+    	picker = "";
+    	picker += String.format("%1.9f", ps);
+    	var ps2 = String.find(picker, "e");
+    	if (ps2 < 0)
+      		picker = String.subString(picker,0,(ps1 + 6));
+	    if (ps2 == 0 || ps2 > 0) 
+		{
+		    var ps3 = String.find(picker, "00000");
+    	    if (ps3 > 0) 
+        		picker = String.subString(picker,0,ps3 + 1) + 
+				String.subString(picker, ps2,String.length(picker)-ps2);
+	     }
+    }
+ 	picker = useri + " " + leninm + " = " + picker + " " + lenonm;
+
+	WMLBrowser.setVar('lenout', picker);
+	WMLBrowser.go('energy.php#Result');
+}

@@ -1,0 +1,69 @@
+extern function areaConv(leni, leno, leninp) 
+{
+	var Units = "~0Square Meters~1Square Inches~2Square Feet~3Square Yards~4Square Rods~5Square Chains~6Roods~7Acres~8Square Miles~9";
+	var leni1 = String.find(Units, "~" + leni);
+	var leni2 = String.find(Units, "~" + (leni + 1));
+	var leninm = String.subString(Units,(leni1 + 2),leni2-(leni1 + 2));
+	var leno1 = String.find(Units, "~" + leno);
+	var leno2 = String.find(Units, "~" + (leno + 1));
+	var lenonm = String.subString(Units,(leno1 + 2),leno2-(leno1 + 2));
+		
+	var isn04;
+	if (leni==0)
+		isn04 = "~01~11550~210.76~31.196~40.0395~50.002471~60.0009884~70.0002471~80.0000003861~9";
+	else if (leni==1)
+		isn04 = "~00.0006452~11~20.006944~30.0007716~40.00002551~50.000001594~60.0000006377~70.0000001594~82.291e-10~9";
+	else if (leni==2)
+		isn04 = "~00.09290~1144~21~30.1111~40.003673~50.0002296~60.00009183~70.00002296~83.587e-8~9";
+	else if (leni==3)
+		isn04 = "~00.8361~11296~29~31~40.03306~50.002066~60.0008264~70.0002066~83.228e-7~9";
+	else if (leni==4)
+		isn04 = "~025.29~139204~2272.25~330.25~41~50.0625~60.025~70.00625~89.766e-6~9";
+	else if (leni==5)
+		isn04 = "~0404.7~1627264~24356~3484~416~51~60.4~70.1~80.00015625~9";
+	else if (leni==6)
+		isn04 = "~01012~11568160~210890~31210~440~52.5~61~70.25~80.000390625~9";
+	else if (leni==7)
+		isn04 = "~04047~16272640~243560~34840~4160~510~64~71~80.0015625~9";
+	else if (leni==8)
+		isn04 = "~02589988~14013355318~227878400~33097600~4102400~56400~62560~7640~81~9";
+
+  	var useri = leninp;
+  	if (useri == 0) 
+  	{
+    	useri = 1;
+    	leninp = useri;
+  	}
+  	var mulstr = isn04;
+	var picker = "~" + leno;
+	var ps = String.find(mulstr, picker);
+	leno++;
+	picker = "~" + leno;
+	var ps1 = String.find(mulstr, picker);
+	mulstr = Lang.parseFloat(String.subString(mulstr,(ps + 2),ps1-(ps + 2)));
+	ps = (useri * mulstr);
+	ps = String.format("%1.9f", ps);
+  	picker = "";
+  	picker += ps;
+  	ps1 = String.find(picker, ".");
+  	if (ps1 > -1) 
+  	{
+    	ps = Lang.parseFloat(ps) + .000001;
+    	picker = "";
+    	picker += String.format("%1.9f", ps);
+    	var ps2 = String.find(picker, "e");
+    	if (ps2 < 0)
+      		picker = String.subString(picker,0,(ps1 + 6));
+	    if (ps2 == 0 || ps2 > 0) 
+		{
+		    var ps3 = String.find(picker, "00000");
+    	    if (ps3 > 0) 
+        		picker = String.subString(picker,0,ps3 + 1) + 
+				String.subString(picker, ps2,String.length(picker)-ps2);
+	     }
+    }
+ 	picker = useri + " " + leninm + " = " + picker + " " + lenonm;
+
+	WMLBrowser.setVar('lenout', picker);
+	WMLBrowser.go('area.php#Result');
+}

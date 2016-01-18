@@ -1,0 +1,67 @@
+extern function powerConv(leni, leno, leninp) 
+{
+	var Units = "~0Hp~1Metric hp~2Kw~3Poncelets~4Kg-m/sec~5Ft-lb/sec~6Kcal/sec~7Btu/sec~8";
+	var leni1 = String.find(Units, "~" + leni);
+	var leni2 = String.find(Units, "~" + (leni + 1));
+	var leninm = String.subString(Units,(leni1 + 2),leni2-(leni1 + 2));
+	var leno1 = String.find(Units, "~" + leno);
+	var leno2 = String.find(Units, "~" + (leno + 1));
+	var lenonm = String.subString(Units,(leno1 + 2),leno2-(leno1 + 2));
+
+	var isn11;
+	if (leni==0)
+		isn11 = "~01~10.7457~21.014~30.7604~476.04~5550~60.1781~70.7068~8";
+	else if (leni==1)
+		isn11 = "~01.3410~11~21.360~31.020~4102.0~5737.6~60.2388~70.9478~8";
+	else if (leni==2)
+		isn11 = "~00.9863~10.7355~21~30.75~475~5542.5~60.1757~70.6971~8";
+	else if (leni==3)
+		isn11 = "~01.315~10.9807~21.333~31~4100~5723.3~60.2342~70.9295~8";
+	else if (leni==4)
+		isn11 = "~00.01315~10.009807~20.01333~30.01~41~57.233~60.002342~70.009295~8";
+	else if (leni==5)
+		isn11 = "~00.00181818~10.001356~20.00184~30.00138~40.1383~51~60.0003238~70.001285~8";
+	else if (leni==6)
+		isn11 = "~05.615~14.187~25.692~34.269~4426.9~53088~61~73.968~8";
+	else if (leni==7)
+		isn11 = "~01.415~11.055~21.434~31.076~4107.6~5778.2~60.2520~71~8";
+
+  	var useri = leninp;
+  	if (useri == 0) 
+  	{
+    	useri = 1;
+    	leninp = useri;
+  	}
+  	var mulstr = isn11;
+	var picker = "~" + leno;
+	var ps = String.find(mulstr, picker);
+	leno++;
+	picker = "~" + leno;
+	var ps1 = String.find(mulstr, picker);
+	mulstr = Lang.parseFloat(String.subString(mulstr,(ps + 2),ps1-(ps + 2)));
+	ps = (useri * mulstr);
+	ps = String.format("%1.9f", ps);
+  	picker = "";
+  	picker += ps;
+  	ps1 = String.find(picker, ".");
+  	if (ps1 > -1) 
+  	{
+    	ps = Lang.parseFloat(ps) + .000001;
+    	picker = "";
+    	picker += String.format("%1.9f", ps);
+    	var ps2 = String.find(picker, "e");
+    	if (ps2 < 0)
+      		picker = String.subString(picker,0,(ps1 + 6));
+	    if (ps2 == 0 || ps2 > 0) 
+		{
+		    var ps3 = String.find(picker, "00000");
+    	    if (ps3 > 0) 
+        		picker = String.subString(picker,0,ps3 + 1) + 
+				String.subString(picker, ps2,String.length(picker)-ps2);
+	     }
+    }
+ 	picker = useri + " " + leninm + " = " + picker + " " + lenonm;
+
+	WMLBrowser.setVar('lenout', picker);
+	WMLBrowser.go('power.php#Result');
+}

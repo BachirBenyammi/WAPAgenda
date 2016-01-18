@@ -1,0 +1,69 @@
+extern function pressureConv(leni, leno, leninp) 
+{
+	var Units = "~0megadynes/sq cm~1kg/sq cm~2lb/sq in~3atmos-pheres~4Hg Meters~5Hg Inches~6H2O Meters~7K-H20 Inches~8H20 Feet~9";
+	var leni1 = String.find(Units, "~" + leni);
+	var leni2 = String.find(Units, "~" + (leni + 1));
+	var leninm = String.subString(Units,(leni1 + 2),leni2-(leni1 + 2));
+	var leno1 = String.find(Units, "~" + leno);
+	var leno2 = String.find(Units, "~" + (leno + 1));
+	var lenonm = String.subString(Units,(leno1 + 2),leno2-(leno1 + 2));
+
+	var isn09;
+	if (leni==0)
+		isn09 = "~01~11.0197~214.5~30.9869~40.7501~529.53~610.21~7401.8~833.49~9";
+	else if (leni==1)
+		isn09 = "~00.9807~11~214.22~30.9678~40.7356~528.96~610.01~7394.1~832.84~9";
+	else if (leni==2)
+		isn09 = "~00.06895~10.07031~21~30.06805~40.05171~52.036~60.7037~727.7~82.309~9";
+	else if (leni==3)
+		isn09 = "~01.0133~11.0332~214.7~31~40.76~529.92~610.34~7407.1~833.93~9";
+	else if (leni==4)
+		isn09 = "~01.3332~11.3595~219.34~31.316~41~539.37~613.61~7535.7~844.64~9";
+	else if (leni==5)
+		isn09 = "~00.03386~10.03453~20.4912~30.03342~40.0254~51~60.3456~713.61~81.134~9";
+	else if (leni==6)
+		isn09 = "~00.09798~10.09991~21.421~30.0967~40.07349~52.893~61~739.37~83.281~9";
+	else if (leni==7)
+		isn09 = "~00.002489~10.002538~20.03609~30.002456~40.001867~50.07349~60.02540~71~80.083333~9";
+	else if (leni==8)
+		isn09 = "~00.02986~10.03045~20.4331~30.02947~40.0224~50.8819~60.3048~712~81~9";
+
+  	var useri = leninp;
+  	if (useri == 0) 
+  	{
+    	useri = 1;
+    	leninp = useri;
+  	}
+  	var mulstr = isn09;
+	var picker = "~" + leno;
+	var ps = String.find(mulstr, picker);
+	leno++;
+	picker = "~" + leno;
+	var ps1 = String.find(mulstr, picker);
+	mulstr = Lang.parseFloat(String.subString(mulstr,(ps + 2),ps1-(ps + 2)));
+	ps = (useri * mulstr);
+	ps = String.format("%1.9f", ps);
+  	picker = "";
+  	picker += ps;
+  	ps1 = String.find(picker, ".");
+  	if (ps1 > -1) 
+  	{
+    	ps = Lang.parseFloat(ps) + .000001;
+    	picker = "";
+    	picker += String.format("%1.9f", ps);
+    	var ps2 = String.find(picker, "e");
+    	if (ps2 < 0)
+      		picker = String.subString(picker,0,(ps1 + 6));
+	    if (ps2 == 0 || ps2 > 0) 
+		{
+		    var ps3 = String.find(picker, "00000");
+    	    if (ps3 > 0) 
+        		picker = String.subString(picker,0,ps3 + 1) + 
+				String.subString(picker, ps2,String.length(picker)-ps2);
+	     }
+    }
+ 	picker = useri + " " + leninm + " = " + picker + " " + lenonm;
+
+	WMLBrowser.setVar('lenout', picker);
+	WMLBrowser.go('pressure.php#Result');
+}
